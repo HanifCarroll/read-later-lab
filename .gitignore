@@ -1,9 +1,9 @@
 .data/
 .pi-lens/
-server
+/server
 ui/svelte/node_modules/
 ui/svelte/.svelte-kit/
 cmd/server/server
-go-embedded-js
+/go-embedded-js
 .env
 .kamal/secrets
