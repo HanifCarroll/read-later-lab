@@ -73,8 +73,8 @@
 						<Textarea required bind:value={savedReason} placeholder="I saved this because..." class="min-h-24" />
 					</label>
 					<div class="flex items-center gap-3">
-						<Button type="submit" disabled={$createItemMutation.isPending}>{$createItemMutation.isPending ? "Analyzing…" : "Analyze and save"}</Button>
-						{#if $createItemMutation.error}<p class="text-sm font-medium text-destructive">{$createItemMutation.error.message}</p>{/if}
+						<Button type="submit" disabled={createItemMutation.isPending}>{createItemMutation.isPending ? "Analyzing…" : "Analyze and save"}</Button>
+						{#if createItemMutation.error}<p class="text-sm font-medium text-destructive">{createItemMutation.error.message}</p>{/if}
 					</div>
 				</form>
 			</Card.CardContent>
@@ -83,17 +83,17 @@
 		<section class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
 			<div>
 				<h2 class="text-2xl font-semibold tracking-tight">Inbox triage</h2>
-				<p class="text-sm text-muted-foreground">{$itemsQuery.isLoading ? "Loading…" : `${$itemsQuery.data?.length ?? 0} saved articles`}</p>
+				<p class="text-sm text-muted-foreground">{itemsQuery.isLoading ? "Loading…" : `${itemsQuery.data?.length ?? 0} saved articles`}</p>
 			</div>
 			<Button variant="outline" on:click={() => queryClient.invalidateQueries({ queryKey: ["items"] })}>Refresh</Button>
 		</section>
 
-		{#if $itemsQuery.error}
-			<p class="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm font-medium text-destructive">{$itemsQuery.error.message}</p>
+		{#if itemsQuery.error}
+			<p class="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm font-medium text-destructive">{itemsQuery.error.message}</p>
 		{/if}
 
 		<section class="grid gap-4">
-			{#each $itemsQuery.data ?? [] as item}
+			{#each itemsQuery.data ?? [] as item}
 				<Card.Card>
 					<Card.CardHeader>
 						<div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -132,11 +132,11 @@
 						</details>
 					</Card.CardContent>
 					<Card.CardFooter class="flex flex-wrap gap-2">
-						<Button size="sm" variant="secondary" disabled={$updateStatusMutation.isPending} on:click={() => setStatus(item, "read_soon")}>Read soon</Button>
-						<Button size="sm" variant="secondary" disabled={$updateStatusMutation.isPending} on:click={() => setStatus(item, "skim_later")}>Skim later</Button>
-						<Button size="sm" variant="secondary" disabled={$updateStatusMutation.isPending} on:click={() => setStatus(item, "reference")}>Reference</Button>
-						<Button size="sm" variant="outline" disabled={$updateStatusMutation.isPending} on:click={() => setStatus(item, "skipped")}>Skip</Button>
-						<Button size="sm" variant="outline" disabled={$updateStatusMutation.isPending} on:click={() => setStatus(item, "archived")}>Archive</Button>
+						<Button size="sm" variant="secondary" disabled={updateStatusMutation.isPending} on:click={() => setStatus(item, "read_soon")}>Read soon</Button>
+						<Button size="sm" variant="secondary" disabled={updateStatusMutation.isPending} on:click={() => setStatus(item, "skim_later")}>Skim later</Button>
+						<Button size="sm" variant="secondary" disabled={updateStatusMutation.isPending} on:click={() => setStatus(item, "reference")}>Reference</Button>
+						<Button size="sm" variant="outline" disabled={updateStatusMutation.isPending} on:click={() => setStatus(item, "skipped")}>Skip</Button>
+						<Button size="sm" variant="outline" disabled={updateStatusMutation.isPending} on:click={() => setStatus(item, "archived")}>Archive</Button>
 					</Card.CardFooter>
 				</Card.Card>
 			{/each}
