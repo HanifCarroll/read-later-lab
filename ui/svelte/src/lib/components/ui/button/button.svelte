@@ -28,13 +28,9 @@
 </script>
 
 <script>
-	let className = "";
-	export { className as class };
-	export let variant = "default";
-	export let size = "default";
-	export let type = "button";
+	let { class: className = "", variant = "default", size = "default", type = "button", children, ...rest } = $props();
 </script>
 
-<button class={buttonVariants({ variant, size, class: className })} {type} {...$$restProps}>
-	<slot />
+<button class={buttonVariants({ variant, size, class: className })} {type} {...rest}>
+	{@render children?.()}
 </button>

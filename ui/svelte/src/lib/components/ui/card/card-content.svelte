@@ -1,9 +1,8 @@
 <script>
 	import { cn } from "$lib/utils";
-	let className = "";
-	export { className as class };
+	let { class: className = "", children, ...rest } = $props();
 </script>
 
-<div class={cn("px-6", className)} {...$$restProps}>
-	<slot />
+<div class={cn("px-6", className)} {...rest}>
+	{@render children?.()}
 </div>
