@@ -5,7 +5,7 @@ import (
 	"io/fs"
 )
 
-//go:embed build
+//go:embed all:build
 var embedded embed.FS
 
 var Assets = mustSub(embedded, "build")
