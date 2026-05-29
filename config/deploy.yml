@@ -36,7 +36,7 @@ ssh:
 
 env:
   clear:
-    ADDR: :8080
+    ADDR: ":8080"
     OPENAI_MODEL: gpt-5.4-mini
   secret:
     - DATABASE_URL
