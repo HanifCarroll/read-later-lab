@@ -7,3 +7,4 @@ cmd/server/server
 /go-embedded-js
 .env
 .kamal/secrets
+.kamal/secrets.*
