@@ -1,5 +1,16 @@
 <script>
-  import '../styles.css';
+	import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
+	import "../styles.css";
+
+	const queryClient = new QueryClient({
+		defaultOptions: {
+			queries: {
+				staleTime: 15_000,
+			},
+		},
+	});
 </script>
 
-<slot />
+<QueryClientProvider client={queryClient}>
+	<slot />
+</QueryClientProvider>

@@ -29,6 +29,7 @@ func New(config Config) http.Handler {
 	s := &server{service: config.Service, assets: config.Assets, devSvelteProxy: config.DevSvelteProxy}
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /", s.home)
+	mux.HandleFunc("GET /healthz", s.healthz)
 	mux.HandleFunc("GET /api/items", s.apiList)
 	mux.HandleFunc("POST /api/items", s.apiCreate)
 	mux.HandleFunc("POST /api/items/{id}/status", s.apiStatus)
@@ -45,6 +46,11 @@ type server struct {
 
 func (s *server) home(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/app", http.StatusFound)
+}
+
+func (s *server) healthz(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write([]byte("ok\n"))
 }
 
 func (s *server) apiList(w http.ResponseWriter, r *http.Request) {

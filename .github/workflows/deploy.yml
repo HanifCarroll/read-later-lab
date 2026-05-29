@@ -1,0 +1,92 @@
+name: Deploy
+
+"on":
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: read-later-lab-production-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to production
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://read-later-lab.hanifcarroll.com
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4"
+
+      - name: Install Kamal
+        run: gem install kamal --version 2.10.0
+
+      - name: Configure SSH
+        shell: bash
+        env:
+          KAMAL_SSH_PRIVATE_KEY: ${{ secrets.KAMAL_SSH_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$KAMAL_SSH_PRIVATE_KEY" > ~/.ssh/kamal
+          chmod 600 ~/.ssh/kamal
+          touch ~/.ssh/known_hosts
+          ssh-keygen -R 178.156.180.60 -f ~/.ssh/known_hosts
+          ssh-keyscan -T 30 -t ed25519 178.156.180.60 > /tmp/read_later_lab_known_hosts
+          test "$(ssh-keygen -lf /tmp/read_later_lab_known_hosts | awk '{print $2}')" = "SHA256:HW624o58yVS471njLPXvO8BaOqWfSpabZDd+drN9SX4"
+          cat /tmp/read_later_lab_known_hosts >> ~/.ssh/known_hosts
+          cat > ~/.ssh/config <<'EOF'
+          Host 178.156.180.60
+            User root
+            IdentityFile ~/.ssh/kamal
+            IdentitiesOnly yes
+          EOF
+          chmod 600 ~/.ssh/config
+
+      - name: Write Kamal secret references
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .kamal
+          cat > .kamal/secrets <<'EOF'
+          KAMAL_REGISTRY_PASSWORD=$KAMAL_REGISTRY_PASSWORD
+          POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+          DATABASE_URL=$DATABASE_URL
+          OPENAI_API_KEY=$OPENAI_API_KEY
+          EOF
+
+      - name: Validate Kamal configuration
+        shell: bash
+        env:
+          KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: kamal config
+
+      - name: Log in to GHCR
+        shell: bash
+        env:
+          KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          printf '%s' "$KAMAL_REGISTRY_PASSWORD" | docker login ghcr.io --username HanifCarroll --password-stdin
+
+      - name: Deploy with Kamal
+        shell: bash
+        env:
+          KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: kamal deploy

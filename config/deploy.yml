@@ -1,0 +1,63 @@
+service: read-later-lab
+
+image: hanifcarroll/read-later-lab
+
+servers:
+  web:
+    hosts:
+      - 178.156.180.60
+    options:
+      memory: 256m
+
+proxy:
+  hosts:
+    - read-later-lab.hanifcarroll.com
+  app_port: 8080
+  ssl: true
+  forward_headers: true
+  healthcheck:
+    path: /healthz
+    interval: 5
+    timeout: 5
+
+registry:
+  server: ghcr.io
+  username: HanifCarroll
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+builder:
+  arch: amd64
+  local: false
+  remote: ssh://root@178.156.180.60
+
+ssh:
+  user: root
+
+env:
+  clear:
+    ADDR: :8080
+    OPENAI_MODEL: gpt-5.4-mini
+  secret:
+    - DATABASE_URL
+    - OPENAI_API_KEY
+
+accessories:
+  postgres:
+    service: read-later-lab-postgres
+    image: postgres:16
+    host: 178.156.180.60
+    options:
+      memory: 384m
+    env:
+      clear:
+        POSTGRES_USER: read_later
+        POSTGRES_DB: read_later
+      secret:
+        - POSTGRES_PASSWORD
+    directories:
+      - data:/var/lib/postgresql/data
+
+aliases:
+  psql: accessory exec postgres "psql -U read_later -d read_later"
+  measure: app exec "sh -lc 'ps -o pid,rss,comm -C server && cat /sys/fs/cgroup/memory.current 2>/dev/null || true'"

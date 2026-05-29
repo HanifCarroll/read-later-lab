@@ -6,12 +6,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@lucide/svelte": "^1.17.0",
     "@sveltejs/adapter-static": "latest",
     "@sveltejs/kit": "latest",
     "@sveltejs/vite-plugin-svelte": "latest",
-    "@tanstack/svelte-query": "latest",
+    "@tailwindcss/vite": "^4.3.0",
+    "@tanstack/svelte-query": "^6.1.33",
+    "clsx": "^2.1.1",
     "svelte": "latest",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.0",
     "vite": "latest"
-  },
-  "devDependencies": {}
+  }
 }

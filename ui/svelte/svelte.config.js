@@ -11,6 +11,10 @@ const config = {
 		paths: {
 			base: "/app",
 		},
+		alias: {
+			$lib: "src/lib",
+			"$lib/*": "src/lib/*",
+		},
 	},
 };
 
