@@ -3,7 +3,7 @@
 .kamal/secrets
 .data
 .pi-lens
-server
-go-embedded-js
+/server
+/go-embedded-js
 ui/svelte/node_modules
 ui/svelte/.svelte-kit
