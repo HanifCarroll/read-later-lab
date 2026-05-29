@@ -1,5 +1,6 @@
 <script>
-	import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
+	import { onDestroy, onMount } from "svelte";
+	import { QueryClient, setQueryClientContext } from "@tanstack/svelte-query";
 	import "../styles.css";
 
 	let { children } = $props();
@@ -11,8 +12,10 @@
 			},
 		},
 	});
+
+	setQueryClientContext(queryClient);
+	onMount(() => queryClient.mount());
+	onDestroy(() => queryClient.unmount());
 </script>
 
-<QueryClientProvider client={queryClient}>
-	{@render children()}
-</QueryClientProvider>
+{@render children()}
