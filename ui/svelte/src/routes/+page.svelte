@@ -8,22 +8,22 @@
 	import { createItem, listItems, updateStatus } from "$lib/api.js";
 
 	const queryClient = useQueryClient();
-	const itemsQuery = createQuery({
+	const itemsQuery = createQuery(() => ({
 		queryKey: ["items"],
 		queryFn: listItems,
-	});
-	const createItemMutation = createMutation({
+	}));
+	const createItemMutation = createMutation(() => ({
 		mutationFn: createItem,
 		onSuccess: () => {
 			url = "";
 			savedReason = "";
 			queryClient.invalidateQueries({ queryKey: ["items"] });
 		},
-	});
-	const updateStatusMutation = createMutation({
+	}));
+	const updateStatusMutation = createMutation(() => ({
 		mutationFn: ({ id, status }) => updateStatus(id, status),
 		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["items"] }),
-	});
+	}));
 
 	let url = "";
 	let savedReason = "";
