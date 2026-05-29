@@ -2,6 +2,8 @@
 	import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
 	import "../styles.css";
 
+	let { children } = $props();
+
 	const queryClient = new QueryClient({
 		defaultOptions: {
 			queries: {
@@ -12,5 +14,5 @@
 </script>
 
 <QueryClientProvider client={queryClient}>
-	<slot />
+	{@render children()}
 </QueryClientProvider>
