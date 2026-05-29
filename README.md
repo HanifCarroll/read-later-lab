@@ -147,7 +147,7 @@ Access it from any device in your tailnet at the HTTPS URL shown by:
 tailscale serve status
 ```
 
-The VPS hostname is configured as `read-later-lab-vps` when joining Tailscale.
+The VPS hostname is configured as `hetzner-vps` when joining Tailscale.
 
 ## RAM checks on the VPS
 
