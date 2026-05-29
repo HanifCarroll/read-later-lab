@@ -127,6 +127,28 @@ For production, `DATABASE_URL` should point at the Kamal accessory, for example:
 postgres://read_later:<password>@read-later-lab-postgres:5432/read_later?sslmode=disable
 ```
 
+### Private Tailscale deployment
+
+The Tailscale overlay in `config/deploy.tailscale.yml` disables the public Kamal proxy and publishes the app only on VPS localhost:
+
+```sh
+kamal deploy -d tailscale
+```
+
+Then expose that private localhost port to your tailnet from the VPS:
+
+```sh
+tailscale serve --bg 8080
+```
+
+Access it from any device in your tailnet at the HTTPS URL shown by:
+
+```sh
+tailscale serve status
+```
+
+The VPS hostname is configured as `read-later-lab-vps` when joining Tailscale.
+
 ## RAM checks on the VPS
 
 ```sh

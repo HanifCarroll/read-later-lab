@@ -1,0 +1,14 @@
+# Private tailnet deployment overlay.
+# Deploy with: kamal deploy -d tailscale
+# Then expose the localhost-bound app on the VPS with:
+#   tailscale serve --bg 8080
+
+servers:
+  web:
+    hosts:
+      - 178.156.180.60
+    proxy: false
+    options:
+      memory: 256m
+      publish:
+        - "127.0.0.1:8080:8080"
